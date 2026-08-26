@@ -1,13 +1,337 @@
-from pathlib import Path
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Felices 4 Meses ❤️</title>
 
-src = Path("/mnt/data/Pasted text.txt")
-text = src.read_text(encoding="utf-8")
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-# Replace the existing mobile media query with a more robust responsive block.
-start = text.find("    @media (max-width: 520px) {")
-end = text.find("  </style>", start)
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-family: Georgia, "Times New Roman", serif;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,.65), transparent 25%),
+        radial-gradient(circle at 80% 80%, rgba(255,255,255,.45), transparent 25%),
+        linear-gradient(135deg, #f9dde5, #f5c6d3, #e9a8ba);
+    }
 
-responsive = r'''    /* RESPONSIVE: tablets, phones and short screens */
+    .background-hearts {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .heart {
+      position: absolute;
+      bottom: -60px;
+      color: rgba(255,255,255,.55);
+      animation: floatHeart linear infinite;
+    }
+
+    .heart:nth-child(1) { left: 5%; font-size: 22px; animation-duration: 11s; }
+    .heart:nth-child(2) { left: 18%; font-size: 14px; animation-duration: 14s; animation-delay: 2s; }
+    .heart:nth-child(3) { left: 32%; font-size: 32px; animation-duration: 12s; animation-delay: 5s; }
+    .heart:nth-child(4) { left: 48%; font-size: 18px; animation-duration: 15s; animation-delay: 1s; }
+    .heart:nth-child(5) { left: 64%; font-size: 28px; animation-duration: 11s; animation-delay: 4s; }
+    .heart:nth-child(6) { left: 78%; font-size: 17px; animation-duration: 13s; animation-delay: 7s; }
+    .heart:nth-child(7) { left: 91%; font-size: 30px; animation-duration: 16s; animation-delay: 3s; }
+
+    @keyframes floatHeart {
+      0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+      15% { opacity: 1; }
+      100% { transform: translateY(-115vh) rotate(35deg); opacity: 0; }
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      width: 92%;
+      max-width: 650px;
+      text-align: center;
+    }
+
+    #openLetter { display: none; }
+
+    .intro {
+      margin-bottom: 35px;
+      transition: opacity .7s ease, transform .7s ease;
+    }
+
+    .intro small {
+      display: block;
+      margin-bottom: 10px;
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: #9a5066;
+    }
+
+    .intro h1 {
+      font-size: clamp(36px, 7vw, 58px);
+      font-weight: normal;
+      font-style: italic;
+      color: #762f48;
+      text-shadow: 0 2px 15px rgba(255,255,255,.5);
+    }
+
+    .envelope-wrapper {
+      position: relative;
+      width: 350px;
+      max-width: 90vw;
+      height: 235px;
+      margin: auto;
+      perspective: 1200px;
+    }
+
+    .envelope {
+      position: absolute;
+      inset: 0;
+      background: #fff0f3;
+      border-radius: 6px;
+      box-shadow: 0 25px 60px rgba(94,31,52,.28);
+    }
+
+    .envelope::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      clip-path: polygon(0 0, 50% 55%, 100% 0, 100% 100%, 0 100%);
+      background: #fbd8e1;
+      border-radius: 6px;
+    }
+
+    .envelope::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      clip-path: polygon(0 100%, 0 25%, 50% 68%, 100% 25%, 100% 100%);
+      background: linear-gradient(135deg, #f9c8d5, #f2b3c5);
+      border-radius: 6px;
+    }
+
+    .flap {
+      position: absolute;
+      z-index: 7;
+      width: 100%;
+      height: 145px;
+      top: 0;
+      left: 0;
+      background: #ffe5ec;
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      transform-origin: top;
+      transition: transform .9s ease, z-index .2s .4s;
+    }
+
+    .seal {
+      position: absolute;
+      z-index: 10;
+      width: 64px;
+      height: 64px;
+      top: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #c25373, #812a44);
+      color: white;
+      font-size: 29px;
+      box-shadow: 0 6px 18px rgba(90,20,42,.35);
+      cursor: pointer;
+      transition: transform .4s ease, opacity .4s ease;
+    }
+
+    .seal:hover { transform: translateX(-50%) scale(1.12); }
+
+    .letter {
+      position: absolute;
+      z-index: 3;
+      width: 90%;
+      height: 205px;
+      left: 5%;
+      top: 15px;
+      padding: 35px 28px;
+      background: linear-gradient(145deg, #fffdf9, #fff9f7);
+      border-radius: 6px;
+      box-shadow: 0 8px 25px rgba(90,35,50,.15);
+      overflow: hidden;
+      transition: transform 1s ease, height 1s ease, width 1s ease, left 1s ease, padding 1s ease;
+    }
+
+    .letter-content {
+      opacity: 0;
+      transform: translateY(25px);
+      transition: opacity .7s .7s ease, transform .7s .7s ease;
+    }
+
+    .mini-title {
+      margin-bottom: 13px;
+      font-family: Arial, sans-serif;
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #b16a7e;
+    }
+
+    .letter h2 {
+      margin-bottom: 25px;
+      color: #742f48;
+      font-size: 32px;
+      font-weight: normal;
+      font-style: italic;
+    }
+
+    .letter p {
+      margin-bottom: 18px;
+      color: #604a51;
+      font-size: 16px;
+      line-height: 1.85;
+    }
+
+    .highlight {
+      margin: 27px 0 !important;
+      padding: 20px 15px;
+      color: #9b3f5b !important;
+      font-size: 19px !important;
+      line-height: 1.7 !important;
+      font-style: italic;
+      border-top: 1px solid #edc3ce;
+      border-bottom: 1px solid #edc3ce;
+    }
+
+    .months {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin: 28px 0;
+    }
+
+    .month {
+      width: 47px;
+      height: 47px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: #f7d7df;
+      color: #8b3852;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      font-weight: bold;
+      box-shadow: 0 3px 10px rgba(100,40,60,.1);
+    }
+
+    .month:last-child {
+      background: #a94461;
+      color: white;
+      transform: scale(1.1);
+    }
+
+    .signature {
+      margin-top: 30px;
+      margin-bottom: 15px;
+      color: #853850;
+      font-size: 24px;
+      font-style: italic;
+    }
+
+    .little-heart {
+      margin-top: 7px;
+      color: #b24766;
+      font-size: 25px;
+    }
+
+    .close {
+      display: inline-block;
+      margin-top: 22px;
+      margin-bottom: 10px;
+      padding: 11px 24px;
+      border: 1px solid #bf7d91;
+      border-radius: 30px;
+      color: #8c3d56;
+      font-family: Arial, sans-serif;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: background .3s ease, color .3s ease;
+    }
+
+    .close:hover {
+      background: #8c3d56;
+      color: white;
+    }
+
+    .open-text {
+      display: block;
+      margin-top: 32px;
+      color: #78394e;
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      cursor: pointer;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: .55; }
+      50% { opacity: 1; }
+    }
+
+    #openLetter:checked ~ .intro {
+      opacity: 0;
+      transform: translateY(-30px);
+      pointer-events: none;
+    }
+
+    #openLetter:checked ~ .envelope-wrapper .flap {
+      transform: rotateX(180deg);
+      z-index: 1;
+    }
+
+    #openLetter:checked ~ .envelope-wrapper .seal {
+      opacity: 0;
+      transform: translateX(-50%) scale(.2);
+      pointer-events: none;
+    }
+
+    #openLetter:checked ~ .envelope-wrapper .letter {
+      z-index: 20;
+      width: min(580px, 94vw);
+      left: 50%;
+      height: 620px;
+      padding: 45px 40px;
+      transform: translate(-50%, -175px);
+      overflow-y: auto;
+    }
+
+    #openLetter:checked ~ .envelope-wrapper .letter-content {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #openLetter:checked ~ .open-text {
+      display: none;
+    }
+
+    .letter::-webkit-scrollbar { width: 5px; }
+    .letter::-webkit-scrollbar-track { background: transparent; }
+    .letter::-webkit-scrollbar-thumb { background: #e4b2c0; border-radius: 20px; }
+
+    /* RESPONSIVE: tablets, phones and short screens */
     @media (max-width: 700px) {
       body {
         min-height: 100svh;
@@ -188,6 +512,14 @@ responsive = r'''    /* RESPONSIVE: tablets, phones and short screens */
       }
     }
 
+    /* Oculta completamente la indicación una vez abierta la carta */
+    #openLetter:checked ~ .open-text {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
@@ -195,13 +527,93 @@ responsive = r'''    /* RESPONSIVE: tablets, phones and short screens */
         transition-duration: 0.01ms !important;
       }
     }
-'''
+  </style>
+</head>
 
-if start == -1:
-    raise ValueError("No se encontró el bloque responsive original.")
+<body>
+  <div class="background-hearts">
+    <span class="heart">♥</span>
+    <span class="heart">♥</span>
+    <span class="heart">♥</span>
+    <span class="heart">♥</span>
+    <span class="heart">♥</span>
+    <span class="heart">♥</span>
+    <span class="heart">♥</span>
+  </div>
 
-new_text = text[:start] + responsive + text[end:]
-out = Path("/mnt/data/index-responsive.html")
-out.write_text(new_text, encoding="utf-8")
+  <main class="container">
+    <input type="checkbox" id="openLetter">
 
-print(f"Archivo creado: {out}")
+    <div class="intro">
+      <small>Para una persona muy especial</small>
+      <h1>Felices 4 meses ♡</h1>
+    </div>
+
+    <div class="envelope-wrapper">
+      <div class="envelope"></div>
+
+      <article class="letter">
+        <div class="letter-content">
+          <div class="mini-title">Para mi solecito ❤️</div>
+
+          <h2>Felices 4 meses, mi amor ♡</h2>
+
+          <p>Hola, buenos días, mi solecito ❤️</p>
+
+          <p>
+            Hoy no es un día cualquiera; hoy es un día muy especial,
+            porque celebramos un mes más juntos. Un mes más de querernos,
+            de reírnos, de molestarnos, de enojarnos de vez en cuando y,
+            sobre todo, de seguir eligiéndonos.
+          </p>
+
+          <p>
+            Estos cuatro meses han sido un tiempo muy bonito para los dos,
+            lleno de momentos especiales, convivencia, aprendizaje y muchas
+            experiencias que poco a poco van formando nuestra historia.
+          </p>
+
+          <p>
+            Me encanta saber que, incluso con nuestras diferencias y esos
+            pequeños enojos que a veces aparecen, seguimos aquí, juntos,
+            aprendiendo el uno del otro y construyendo algo cada vez más bonito.
+          </p>
+
+          <p class="highlight">
+            Deseo de corazón que estos meses se conviertan en años y que,
+            con el tiempo, esos años se transformen en toda una vida juntos. ❤️
+          </p>
+
+          <div class="months">
+            <div class="month">1</div>
+            <div class="month">2</div>
+            <div class="month">3</div>
+            <div class="month">4 ♥</div>
+          </div>
+
+          <p>
+            Que podamos seguir creando recuerdos, riéndonos, apoyándonos
+            y disfrutando cada etapa que nos toque vivir.
+          </p>
+
+          <p>
+            Gracias por estos cuatro meses y por cada momento compartido.
+            Espero que esto sea apenas el comienzo de muchísimos meses más a tu lado.
+          </p>
+
+          <div class="signature">LKM, mi enojona ❤️</div>
+          <div class="little-heart">♡</div>
+
+          <label for="openLetter" class="close">Cerrar carta</label>
+        </div>
+      </article>
+
+      <div class="flap"></div>
+
+      <label for="openLetter" class="seal" title="Abrir carta">♥</label>
+    </div>
+
+    <label for="openLetter" class="open-text">Toca el corazón para abrir</label>
+  </main>
+</body>
+</html>
